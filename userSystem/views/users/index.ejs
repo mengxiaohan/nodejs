@@ -1,0 +1,65 @@
+    <script>
+        function search() {
+            var value = document.getElementById("nameQuery").value;
+            window.location.href = "/users/list?nameQuery=" + value;
+        }
+
+        function delData(id) {
+			getHtml("/users/delete?id=" + id);
+        }
+        
+        //编辑的跳转
+        function editData(id) {
+			getHtml("/users/edit?id=" + id);
+        }
+		
+		function getHtml(aspxURL){
+            $.ajax({
+                url: aspxURL,
+                global: false,
+                type: "GET",
+                dataType: "html",
+                async: false,
+                success: function (msg) {
+                    $("#showInfo").hide();
+                    $("#detailDIV").html(msg);
+                }
+            })
+		}
+
+    </script>
+
+    <div class="panel panel-primary" style="min-height:500px;">
+        <div class="panel-heading">用户列表</div>
+        <div style="float:right;margin-top:-32px;">
+             <input type="text" id="nameQuery"/><button id="search" onclick="search()" runat="server">查询</button>
+             <button id="batchDelete" runat="server">批量删除</button>
+        </div>
+        <div>
+            <table id="dataTable"  class="table table-bordered" runat="server">
+                <tr>
+                    <th>ID</th>
+		            <th>登陆名</th>
+		            <th>密码</th>
+		            <th>用户姓名</th>
+		            <th>描述</th>
+                    <th>
+                        操作
+                    </th>
+                </tr>
+				<% user.forEach(function(user){%>
+					<tr>
+						<td><%= user.id %></td>
+						<td><%= user.login_name %></td>
+						<td><%= user.login_pwd %></td>
+						<td><%= user.username %></td>
+						<td><%= user.description %></td>
+						<td>
+							<button onclick='editData(<%= user.id %>)'>编辑</button>
+							<button onclick='delData(<%= user.id %>)'>删除</button>
+						</td>
+					</tr>
+				<% });%>
+            </table>
+        </div>
+    </div>
